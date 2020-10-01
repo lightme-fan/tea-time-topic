@@ -29,8 +29,8 @@ const fetchTeaTopic = async () => {
         updatedLocalStorage();
     }
 
-    // Displaying the tea topocs
-    const displayTeaTopics =  () => {
+    // Displaying the Next tea topocs
+    const displayNextTeaTopics =  () => {
         // Filtering the tea topics which aren't discussed on 
         const nextTopicFilter = teaTopics.filter(teaTopic => teaTopic.discussedOn === "");
         const sorting = teaTopics.sort((a,b) => {
@@ -42,7 +42,7 @@ const fetchTeaTopic = async () => {
 
         // Display Nest topics
         const nextTopicHtml = nextTopicFilter.map(nextTopic => `
-            <div class="topic-card" data-id="${nextTopic.id}">
+            <div class="topic-card undiscussedTopic" data-archive="${nextTopic.discussedOn}" data-id="${nextTopic.id}">
                 <p class="d-flex justify-content-between">
                     <span>${nextTopic.title}</span>
                     <button class="archive_btn align-self-start">
@@ -52,17 +52,20 @@ const fetchTeaTopic = async () => {
                 <p class="d-flex justify-content-around">
                     <div class="d-flex">
                         <button class="like_btn" value="${nextTopic.id}"><img src="./icons/like.svg" alt=""></button>
-                        <span>${nextTopic.upvotes}</span>
+                        <span class="number_of_like">${nextTopic.upvotes}</span>
                     </div>
                     <div class="d-flex">
                         <button class="dislike_btn" value="${nextTopic.id}"><img src="./icons/dislike.svg" alt=""></button>
-                        <span>${nextTopic.downvotes}</span>
+                        <span class="number_of_dislike">${nextTopic.downvotes}</span>
                     </div>
                 </p>
             </div>
         `)
         nextTopicList.innerHTML = nextTopicHtml.join("");
+    }
 
+    // Displaying the Past tea topocs
+    const displayPastTeaTopics =  () => {
         // Filtering the tea topics which have been discussed on
         const pastTopicFilter = teaTopics.filter(teaTopic => teaTopic.discussedOn)
         
@@ -84,6 +87,27 @@ const fetchTeaTopic = async () => {
 
     // Handle Click buttons
     const handleClickButtons = (e) => {
+        // Handle archive button
+        if (e.target.matches('button.archive_btn')) {
+            const closestEl = e.target.closest('.undiscussedTopic');
+            const id = closestEl.dataset.id;
+            archiveTopic(id);
+        }
+
+        // Handle like Button
+        if (e.target.matches('button.like_btn')) {
+            const closestEl = e.target.closest('.undiscussedTopic');
+            const id = closestEl.dataset.id;
+            handleLikeButton(id)
+        }
+
+        // Handle dislike button
+        if (e.target.matches('button.dislike_btn')) {
+            const closestEl = e.target.closest('.undiscussedTopic');
+            const id = closestEl.dataset.id;
+            handleDislikeButton(id)
+        }
+
         // Handle delete button
         if (e.target.matches('button.delete_button')) {
             const findClosest = e.target.closest('.discussedTopic');
@@ -92,10 +116,33 @@ const fetchTeaTopic = async () => {
         }
     }
 
+    // Archive Tea Topic
+    const archiveTopic = () => {
+        const filteredArchiveTopic = teaTopics.find(teaTopic => teaTopic.discussedOn);
+        teaTopics = filteredArchiveTopic;
+        
+    }
+
+    // Like Topic
+    const handleLikeButton = (id) => {
+        const likedTopic = teaTopics.find(teaTopic => teaTopic.id === id);
+        likedTopic.upvotes = likedTopic.upvotes + 1;
+        displayNextTeaTopics()
+        updatedLocalStorage();
+    }
+
+    // handle Dislike Button
+    const handleDislikeButton = (id) => {
+        const dislikedTopic = teaTopics.find(teaTopic => teaTopic.id === id);
+        dislikedTopic.downvotes = dislikedTopic.downvotes + 1;
+        displayNextTeaTopics()
+        updatedLocalStorage();
+    }
+
     //  Delete items
     const deleteTeaTopic = (id) => {
         teaTopics = teaTopics.filter(teaTopic => teaTopic.id !== id);
-        displayTeaTopics();
+        displayPastTeaTopics();
         updatedLocalStorage(teaTopics)
     }
 
@@ -111,22 +158,23 @@ const fetchTeaTopic = async () => {
             upvotes: 0,
         }
         teaTopics.push(newTopic);
-        displayTeaTopics(teaTopics);
+        displayNextTeaTopics(teaTopics);
         updatedLocalStorage(teaTopics)
+        form.reset();
     }
-
-    console.log(teaTopics);
-    // Submit Event
-    submitBtn.addEventListener('submit', addTeaTopic);
-
+    
     // Local Storage
     initialLocalStorage();
 
     // Event listener for click buttons
     window.addEventListener('click', handleClickButtons);
 
+    // Submit Event
+    submitBtn.addEventListener('submit', addTeaTopic);
+
     // display TeaTopics
-    displayTeaTopics();
+    displayNextTeaTopics();
+    displayPastTeaTopics()
 
 }
 
