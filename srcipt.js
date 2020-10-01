@@ -1,7 +1,7 @@
 // Grab the elements which are going to be used
 const nextTopicList = document.querySelector('.next_topic');
 const pastTopicList = document.querySelector('.past_topic'); 
-const submitBtn = document.querySelector('.addBtn');
+const submitBtn = document.querySelector('.add_form');
 
 // API url
 const endpoint = 'https://gist.githubusercontent.com/Pinois/93afbc4a061352a0c70331ca4a16bb99/raw/6da767327041de13693181c2cb09459b0a3657a1/topics.json';
@@ -84,7 +84,6 @@ const fetchTeaTopic = async () => {
 
     // Handle Click buttons
     const handleClickButtons = (e) => {
-        
         // Handle delete button
         if (e.target.matches('button.delete_button')) {
             const findClosest = e.target.closest('.discussedTopic');
@@ -99,6 +98,26 @@ const fetchTeaTopic = async () => {
         displayTeaTopics();
         updatedLocalStorage(teaTopics)
     }
+
+    // Add Function
+    const addTeaTopic = (e) => {
+        e.preventDefault();
+        const form = e.currentTarget;
+        const newTopic = {
+            discussedOn: "",
+            downvotes: 0,
+            id: Date.now().toString(),
+            title: form.title.value,
+            upvotes: 0,
+        }
+        teaTopics.push(newTopic);
+        displayTeaTopics(teaTopics);
+        updatedLocalStorage(teaTopics)
+    }
+
+    console.log(teaTopics);
+    // Submit Event
+    submitBtn.addEventListener('submit', addTeaTopic);
 
     // Local Storage
     initialLocalStorage();
