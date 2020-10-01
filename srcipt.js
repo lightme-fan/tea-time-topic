@@ -11,6 +11,7 @@ let teaTopics = [];
 
 // Fetching data
 const fetchTeaTopic = async () => {
+    // Fetch Data
     const response = await fetch(endpoint);
     const data = await response.json();
     teaTopics = data;
@@ -29,38 +30,37 @@ const fetchTeaTopic = async () => {
         updatedLocalStorage();
     }
 
-    // Displaying the Next tea topocs
+    // Displaying the Next tea topics
     const displayNextTeaTopics =  () => {
         // Filtering the tea topics which aren't discussed on 
         const nextTopicFilter = teaTopics.filter(teaTopic => teaTopic.discussedOn === "");
-        const sorting = teaTopics.sort((a,b) => {
-            const likes = b.upvotes - a.upvotes;
-            const dislikes = b.downvotes - a.downvotes;
-            // console.log(likes - dislikes);
-            return likes - dislikes; 
-        });
 
-        // Display Nest topics
-        const nextTopicHtml = nextTopicFilter.map(nextTopic => `
-            <div class="topic-card undiscussedTopic" data-archive="${nextTopic.discussedOn}" data-id="${nextTopic.id}">
-                <p class="d-flex justify-content-between">
-                    <span>${nextTopic.title}</span>
-                    <button class="archive_btn align-self-start">
-                        <img src="./icons/archive.svg" alt="">
-                    </button>
-                </p>
-                <p class="d-flex justify-content-around">
-                    <div class="d-flex">
-                        <button class="like_btn" value="${nextTopic.id}"><img src="./icons/like.svg" alt=""></button>
-                        <span class="number_of_like">${nextTopic.upvotes}</span>
+        // Display Nest topics by sorting and mapping
+        const nextTopicHtml = nextTopicFilter
+            .sort((a, b) => {
+                return `${a.upvotes - b.upvotes} - ${a.downvotes - b.downvotes}`;
+            })
+            .map(nextTopic => {  
+                return `
+                <div class="topic-card undiscussedTopic" data-archive="${nextTopic.discussedOn}" data-id="${nextTopic.id}">
+                    <p class="d-flex justify-content-between">
+                        <span>${nextTopic.title}</span>
+                        <button class="archive_btn align-self-start">
+                            <img src="./icons/archive.svg" alt="">
+                        </button>
+                    </p>
+                    <div class="ratio">
+                        <div class="d-flex">
+                            <button class="like_btn" value="${nextTopic.id}"><img src="./icons/like.svg" alt=""></button>
+                            <span class="number_of_like">${nextTopic.upvotes}</span>
+                        </div>
+                        <div class="d-flex">
+                            <button class="dislike_btn" value="${nextTopic.id}"><img src="./icons/dislike.svg" alt=""></button>
+                            <span class="number_of_dislike">${nextTopic.downvotes}</span>
+                        </div>
                     </div>
-                    <div class="d-flex">
-                        <button class="dislike_btn" value="${nextTopic.id}"><img src="./icons/dislike.svg" alt=""></button>
-                        <span class="number_of_dislike">${nextTopic.downvotes}</span>
-                    </div>
-                </p>
-            </div>
-        `)
+                </div>
+            `})
         nextTopicList.innerHTML = nextTopicHtml.join("");
     }
 
@@ -84,7 +84,7 @@ const fetchTeaTopic = async () => {
                             <img src="./icons/trash.svg" alt="">
                         </button>
                     </p>
-                    <div class="align-center">Discussed on ${date}</div>
+                    <div class="align-center date">Discussed on ${date}</div>
                 </div>
             `})
         pastTopicList.innerHTML = pastTopicHtml.join("");
@@ -123,10 +123,18 @@ const fetchTeaTopic = async () => {
     }
 
     // Archive Tea Topic
-    const archiveTopic = () => {
-        const filteredArchiveTopic = teaTopics.find(teaTopic => teaTopic.discussedOn);
-        teaTopics = filteredArchiveTopic;
-        
+    const archiveTopic = (id) => {
+        const filteredArchiveTopic = teaTopics.find(teaTopic => teaTopic.id === id);
+        filteredArchiveTopic.discussedOn = Date.now();
+        filteredArchiveTopic.downvotes = filteredArchiveTopic.downvotes;
+        filteredArchiveTopic.id = filteredArchiveTopic.id;
+        filteredArchiveTopic.title = filteredArchiveTopic.title;
+        filteredArchiveTopic.upvotes = filteredArchiveTopic.upvotes;
+
+        teaTopic = filteredArchiveTopic;
+        displayNextTeaTopics()
+        displayPastTeaTopics()
+        updatedLocalStorage();
     }
 
     // Like Topic
@@ -181,7 +189,7 @@ const fetchTeaTopic = async () => {
     // display TeaTopics
     displayNextTeaTopics();
     displayPastTeaTopics()
-
+    
 }
 
 fetchTeaTopic()
