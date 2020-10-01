@@ -68,19 +68,25 @@ const fetchTeaTopic = async () => {
     const displayPastTeaTopics =  () => {
         // Filtering the tea topics which have been discussed on
         const pastTopicFilter = teaTopics.filter(teaTopic => teaTopic.discussedOn)
-        
+
         // Display past Topics
-        const pastTopicHtml = pastTopicFilter.map(pastTopic => `
-            <div class="topic-card discussedTopic" data-id="${pastTopic.id}">
-                <p class="d-flex justify-content-between">
-                    <span>${pastTopic.title}</span>
-                    <button class="delete_button align-self-start" value=${pastTopic.id}>
-                        <img src="./icons/trash.svg" alt="">
-                    </button>
-                </p>
-                <div class="align-center">Date</div>
-            </div>
-        `)
+        const pastTopicHtml = pastTopicFilter.map(pastTopic => {
+            const dissussedDate = pastTopic.discussedOn;
+            const convertToNumber = Number(dissussedDate);
+            const convertToNormalDate = new Date(convertToNumber);
+            const date = convertToNormalDate.toLocaleDateString();
+
+            return `
+                <div class="topic-card discussedTopic" data-id="${pastTopic.id}">
+                    <p class="d-flex justify-content-between">
+                        <span>${pastTopic.title}</span>
+                        <button class="delete_button align-self-start" value=${pastTopic.id}>
+                            <img src="./icons/trash.svg" alt="">
+                        </button>
+                    </p>
+                    <div class="align-center">Discussed on ${date}</div>
+                </div>
+            `})
         pastTopicList.innerHTML = pastTopicHtml.join("");
 
     }
