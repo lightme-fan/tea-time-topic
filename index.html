@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <style>
+      h2 {
+        text-transform: uppercase;
+        opacity: 0.5  ;
+      }
+
+      .form-control::-webkit-input-placeholder {
+        background-color: rgb(204, 201, 201);
+      }
+
+      img {
+        width: 15px;
+      }
+
+    </style>
+  </head>
+  <body>
+    <article class="container">
+      <header>
+        <h1>Tea Time Topic</h1>
+      </header>
+
+      <section>
+        <h2 class="h6">Add a topic</h2>
+        
+        <form>
+          <div class="form-row align-items-center">
+            <div class="col-auto">
+              <label class="sr-only" for="inlineFormInput">Name</label>
+              <input type="text" class="form-control mb-2" id="inlineFormInput" placeholder="Wirte your new topic">
+            </div>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-primary mb-2 addBtn">Submit</button>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <section>
+        <h2 class="h6">Next Topic</h2>
+        <div class="next_topic">
+          <!-- <p class="d-flex justify-content-between">
+            <span>fdjslgkjfsskjs;lksjlsdkj</span>
+            <span>
+              <img src="./icons/archive.svg" alt="">
+            </span>
+          </p>
+          <p class="d-flex justify-content-around">
+            <img src="./icons/like.svg" alt="">
+            <img src="./icons/dislike.svg" alt="">
+            </div>
+          </p> -->
+        </div>
+      </section>
+
+      <section>
+        <h2 class="h6">Past topic</h2>
+        <div class="past_topic"></div>
+      </section>
+    
+    </article>
+    
+    <script src="./srcipt.js"></script>
+  </body>
+</html>
